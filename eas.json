@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 16.13.4",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_BASE_URL": "http://178.156.183.89:443",
+        "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_TYooMQauvdEDq54NiTphI7jx",
+        "EXPO_PUBLIC_GOOGLE_CLIENT_ID": "159306844589-flmcce3m3eij221f5i2710inlsdkk99m.apps.googleusercontent.com"
+      },
+      "developmentClient": false,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
