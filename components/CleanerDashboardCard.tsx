@@ -4,6 +4,7 @@ import usePropertyStore from '@/store/jobStore';
 import { DateFormatter, getTimeDuration } from '@/utils/DateUtils';
 import { router } from 'expo-router';
 import {
+    Building,
     Clock,
     MessageCircleMore,
     Phone,
@@ -56,7 +57,7 @@ export default function CleanerDashboardCard({
     const [detailUser, setDetailedUser] = useState<any>(null);
 
     const inProgressGreen = '#4D9043';
-console.log("cleaner",jobs)
+    console.log("cleaner", jobs)
     // Determine if job status is "in progress"
     const isInProgress = jobs?.status?.toLowerCase() === 'in-progress';
 
@@ -122,17 +123,17 @@ console.log("cleaner",jobs)
         >
             {/* Header Row */}
             <View className="flex-row items-start mb-1">
-                {/* Profile Image */}
-                <Image
-                    source={
-                        detailUser?.profile_picture
-                            ? { uri: detailUser.profile_picture }
-                            : require('@/assets/images/profile.png')
-                    }
-                    className="w-14 h-14 mr-3 rounded-full"
-                    resizeMode="cover"
-                />
-
+                {jobs.property_detail?.main_image ? (
+                    <Image
+                        source={{ uri: jobs.property_detail?.main_image }}
+                        className="w-14 h-14 mr-3 rounded-md"
+                        resizeMode="cover"
+                    />
+                ) : (
+                    <View className="w-14 h-14 mr-3 rounded-full bg-gray-100 items-center justify-center">
+                        <Building size={24} color="#6B7280" /> 
+                    </View>
+                )}
                 <View className="flex-1">
                     {/* Name and Rating */}
                     <View className="flex-row items-center justify-between mb-1">
@@ -144,7 +145,7 @@ console.log("cleaner",jobs)
                             >
                                 {jobs.property_detail.name}
                             </Text>
-                            
+
                         </View>
 
                         {/* Right: Job Status */}
@@ -174,12 +175,12 @@ console.log("cleaner",jobs)
                         <Text className="mx-2 text-white font-bold">•</Text>
 
                         <User size={14} color={iconColor} />
-                         <Text
-                                      style={{ color: subTextColor }}
-                                      className="text-sm ml-2"
-                                    >
-                                      {detailUser?.first_name} {detailUser?.last_name}
-                                    </Text>
+                        <Text
+                            style={{ color: subTextColor }}
+                            className="text-sm ml-2"
+                        >
+                            {detailUser?.first_name} {detailUser?.last_name}
+                        </Text>
                     </View>
                 </View>
             </View>

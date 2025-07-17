@@ -59,7 +59,7 @@ export default function HostDashboardCard({
   const inProgressGreen = '#4D9043';
 
   // Determine if job status is "in progress"
-  const isInProgress = jobs?.status?.toLowerCase() === 'in-progress';
+  const isInProgress = jobs?.status?.toLowerCase() === 'in-progress' ||jobs?.status?.toLowerCase() === 'completed';
 
   // Conditional styles for "in progress"
   const cardStyle = {
@@ -130,7 +130,7 @@ if (loadingDetails || !detailUser) {
               ? { uri: detailUser.profile_picture }
               : require('@/assets/images/profile.png')
           }
-          className="w-14 h-14 mr-3 rounded-full"
+          className="w-14 h-14 mr-3 rounded-md"
           resizeMode="cover"
         />
 

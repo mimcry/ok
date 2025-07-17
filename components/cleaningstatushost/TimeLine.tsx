@@ -143,7 +143,7 @@ const TimelineSchedule = ({ jobData }) => {
         </View>
          {jobData.status === 'completed' && (
           <Text className="text-white/80 text-sm mt-1">
-            Finished at  <DateFormatter date={jobData.cleaner_end_time || jobData.end_time} format='time' textClassName='text-white'/>
+            Finished at  <DateFormatter date={jobData.finished_at} format='time' textClassName='text-white'/>
           </Text>
         )}
         {jobData.status === 'in-progress' && (

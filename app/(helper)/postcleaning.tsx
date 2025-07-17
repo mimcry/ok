@@ -4,7 +4,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import {
   Camera,
   Check,
-  CheckCircle,
   CheckSquare,
   MapPin,
   MessageSquare,
@@ -503,6 +502,77 @@ const PostCleaning: React.FC = () => {
                 </View>
               </View>
 
+             
+              <View className="bg-white rounded-xl shadow-sm mb-4 p-4">
+                <View className="flex-row items-center justify-between mb-3">
+                  <View className="flex-row items-center">
+                    <Camera size={20} color="#6366F1" className="mr-2" />
+                    <Text className="text-primary font-bold text-lg ml-2">
+                      Upload Room Condition
+                    </Text>
+                  </View>
+                  <View className="bg-indigo-100 px-2 py-1 rounded-full">
+                    <Text className="text-xs text-primary font-medium">
+                      {roomPhotos.length} photos
+                    </Text>
+                  </View>
+                </View>
+                
+                <Text className="text-gray-500 mb-3">
+                  Take photos of the room's condition after cleaning (multiple selection supported)
+                </Text>
+                
+                {/* Photo Gallery */}
+                {roomPhotos.length > 0 && (
+                  <View className="mb-3">
+                    <FlatList
+                      data={roomPhotos}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      renderItem={({item}) => renderPhotoThumbnail(item, 'room')}
+                      keyExtractor={item => item.id}
+                      className="py-2"
+                    />
+                  </View>
+                )}
+           
+                
+                {/* Add Photo Button */}
+                <TouchableOpacity 
+                  className="border-2 border-dashed border-indigo-200 rounded-xl h-32 justify-center items-center bg-indigo-50 mb-3"
+                  onPress={pickImage}
+                  disabled={isUploading}
+                >
+                  <Plus size={24} color="#6366F1" />
+                  <Text className="text-indigo-500 font-medium mt-1">
+                    {roomPhotos.length > 0 ? 'Add More Photos' : 'Add Photo'}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Upload Button - Only show when there are photos */}
+                {roomPhotos.length > 0 && (
+                  <TouchableOpacity 
+                    className="bg-green-500 rounded-xl p-3 flex-row items-center justify-center"
+                    onPress={uploadRoomPhotos}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <>
+                        <ActivityIndicator size="small" color="white" />
+                        <Text className="text-white font-medium ml-2">Uploading...</Text>
+                      </>
+                    ) : (
+                      <>
+                        <Camera size={16} color="white" />
+                        <Text className="text-white font-medium ml-2">
+                          {photosUploaded ? 'Re-upload Photos' : 'Upload Photos'}
+                        </Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                )}
+              </View>
+
               {/* Checklist Section - Only show if checklist exists */}
               {checklist.length > 0 && (
                 <View className="bg-white rounded-xl shadow-sm mb-4 p-4">
@@ -567,14 +637,14 @@ const PostCleaning: React.FC = () => {
                     return (
                       <View key={roomIndex} className="mb-4 last:mb-0">
                         {/* Room Header */}
-                        <View className="bg-blue-200 px-3 mt-2 py-2 rounded-t-lg border-b border-indigo-200">
-                          <Text className="font-semibold text-indigo-800 text-sm">
+                        <View className=" px-3 mt-2 py-2 rounded-t-lg ">
+                          <Text className="font-semibold text-gray-70 text-sm">
                             {room} ({sortedItems.length} {priorityFilter !== 'all' ? priorityFilter : 'tasks'})
                           </Text>
                         </View>
 
                         {/* Room Tasks */}
-                        <View className="bg-white border rounded-b-lg border-t-0 border-gray-200">
+                        <View className="bg-white  border-gray-200">
                           {sortedItems.map((item, index) => {
                             const priorityStyle = getPriorityStyle(item.priority_display || item.priority);
                             const isCompleted = completedTasks.has(item.id);
@@ -624,86 +694,6 @@ const PostCleaning: React.FC = () => {
                 </View>
               )}
 
-              {/* Room Condition Photos */}
-              <View className="bg-white rounded-xl shadow-sm mb-4 p-4">
-                <View className="flex-row items-center justify-between mb-3">
-                  <View className="flex-row items-center">
-                    <Camera size={20} color="#6366F1" className="mr-2" />
-                    <Text className="text-primary font-bold text-lg ml-2">
-                      Upload Room Condition
-                    </Text>
-                  </View>
-                  <View className="bg-indigo-100 px-2 py-1 rounded-full">
-                    <Text className="text-xs text-primary font-medium">
-                      {roomPhotos.length} photos
-                    </Text>
-                  </View>
-                </View>
-                
-                <Text className="text-gray-500 mb-3">
-                  Take photos of the room's condition after cleaning (multiple selection supported)
-                </Text>
-                
-                {/* Photo Gallery */}
-                {roomPhotos.length > 0 && (
-                  <View className="mb-3">
-                    <FlatList
-                      data={roomPhotos}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      renderItem={({item}) => renderPhotoThumbnail(item, 'room')}
-                      keyExtractor={item => item.id}
-                      className="py-2"
-                    />
-                  </View>
-                )}
-                
-                {/* Upload Success Message */}
-                {photosUploaded && (
-                  <View className="bg-green-50 border border-green-200 rounded-xl p-3 mb-3 flex-row items-center">
-                    <CheckCircle size={20} color="#22C55E" />
-                    <Text className="text-green-700 font-medium ml-2">
-                      Photos uploaded successfully!
-                    </Text>
-                  </View>
-                )}
-                
-                {/* Add Photo Button */}
-                <TouchableOpacity 
-                  className="border-2 border-dashed border-indigo-200 rounded-xl h-32 justify-center items-center bg-indigo-50 mb-3"
-                  onPress={pickImage}
-                  disabled={isUploading}
-                >
-                  <Plus size={24} color="#6366F1" />
-                  <Text className="text-indigo-500 font-medium mt-1">
-                    {roomPhotos.length > 0 ? 'Add More Photos' : 'Add Photo'}
-                  </Text>
-                </TouchableOpacity>
-
-                {/* Upload Button - Only show when there are photos */}
-                {roomPhotos.length > 0 && (
-                  <TouchableOpacity 
-                    className="bg-green-500 rounded-xl p-3 flex-row items-center justify-center"
-                    onPress={uploadRoomPhotos}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <>
-                        <ActivityIndicator size="small" color="white" />
-                        <Text className="text-white font-medium ml-2">Uploading...</Text>
-                      </>
-                    ) : (
-                      <>
-                        <Camera size={16} color="white" />
-                        <Text className="text-white font-medium ml-2">
-                          {photosUploaded ? 'Re-upload Photos' : 'Upload Photos'}
-                        </Text>
-                      </>
-                    )}
-                  </TouchableOpacity>
-                )}
-              </View>
-              
               {/* Message Owner Button */}
               <TouchableOpacity 
                 className="bg-white rounded-xl shadow-sm mb-6 p-4 flex-row items-center justify-center"

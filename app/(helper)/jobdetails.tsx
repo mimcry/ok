@@ -441,63 +441,84 @@ export default function jobdescription() {
         </View>
 
         {checklistLoading ? (
-          <View className="py-4 items-center">
-            <ActivityIndicator size="small" color="#4F46E5" />
-            <Text className="text-gray-500 mt-2 text-sm">Loading checklist...</Text>
-          </View>
-        ) : (
-          <View className="space-y-2">
-            {Object.keys(groupedChecklist).map((room, roomIndex) => {
-              // Apply filtering correctly
-              const filteredItems = priorityFilter === 'all'
-                ? groupedChecklist[room]
-                : groupedChecklist[room].filter(item => {
-                  const itemPriority = (item.priority_display || item.priority).toLowerCase();
-                  return itemPriority === priorityFilter.toLowerCase();
-                });
+  <View className="py-4 items-center">
+    <ActivityIndicator size="small" color="#4F46E5" />
+    <Text className="text-gray-500 mt-2 text-sm">Loading checklist...</Text>
+  </View>
+) : (
+  <>
+    {/* Check if all filtered lists are empty */}
+    {Object.keys(groupedChecklist).every((room) => {
+      const filteredItems = priorityFilter === 'all'
+        ? groupedChecklist[room]
+        : groupedChecklist[room].filter(item => {
+            const itemPriority = (item.priority_display || item.priority)?.toLowerCase();
+            return itemPriority === priorityFilter.toLowerCase();
+          });
+      return filteredItems.length === 0;
+    }) ? (
+      <View className="p-4 rounded-lg items-center bg-blue-50 mb-4">
+        <Text className="text-gray-500 text-sm text-center">
+          No checklist items found for this filter.
+        </Text>
+      </View>
+    ) : (
+      <View className="space-y-2">
+        {Object.keys(groupedChecklist).map((room, roomIndex) => {
+          const filteredItems = priorityFilter === 'all'
+            ? groupedChecklist[room]
+            : groupedChecklist[room].filter(item => {
+              const itemPriority = (item.priority_display || item.priority)?.toLowerCase();
+              return itemPriority === priorityFilter.toLowerCase();
+            });
 
-              // Don't render room if no items match filter
-              if (filteredItems.length === 0) return null;
+          if (filteredItems.length === 0) return null;
 
-              // Sort items by priority: high -> medium -> low
-              const sortedItems = [...filteredItems].sort((a, b) => {
-                const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
-                const aPriority = (a.priority_display || a.priority).toLowerCase();
-                const bPriority = (b.priority_display || b.priority).toLowerCase();
-                return (priorityOrder[bPriority] || 0) - (priorityOrder[aPriority] || 0);
-              });
+          const sortedItems = [...filteredItems].sort((a, b) => {
+            const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+            const aPriority = (a.priority_display || a.priority)?.toLowerCase();
+            const bPriority = (b.priority_display || b.priority)?.toLowerCase();
+            return (priorityOrder[bPriority] || 0) - (priorityOrder[aPriority] || 0);
+          });
 
-              return (
-                <View key={roomIndex} className="mb-3">
-                  {/* Room Header with Circle and Task List */}
-                  <View className="flex-row items-start  ">
-                    {/* Circle Icon */}
-                    <View className="mr-4 mt-1">
-                      <View className="w-6 h-6 rounded-full border-2 border-gray-300 bg-white" />
-                    </View>
-                    {/* Room Content */}
-                    <View className="flex-1">
-                      {/* Room Title */}
-                      <Text className="text-md font-semibold text-gray-900 mb-2">
-                        {room}
-                      </Text>
-                      
-                      {/* Task List */}
-                      <View className="space-y-1">
-                        {sortedItems.map((item, index) => (
-                          <Text key={item.id} className="text-sm text-gray-600 leading-5">
-                            {item.description}
-                          </Text>
-                        ))}
+          return (
+            <View key={roomIndex} className="mb-3">
+              <View className="flex-row items-start">
+                <View className="mr-4 mt-1">
+                  <View className="w-6 h-6 rounded-full border-2 border-gray-300 bg-white" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-md font-semibold text-gray-900 ">
+                    {room}
+                  </Text>
+                  <View className="space-y-1">
+                    {sortedItems.map((item) => (
+                      <View key={item.id} className="flex-row justify-between items-center">
+                        <Text className="text-sm text-gray-600 leading-5 flex-1 pr-2 py-2">
+                          {item.description}
+                        </Text>
+                        <Text className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                          item.priority.toLowerCase() === 'high'
+                            ? 'bg-red-100 text-red-600'
+                            : item.priority.toLowerCase() === 'medium'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-green-100 text-green-700'
+                        }`}>
+                          {toCamelCase(item.priority_display || item.priority)}
+                        </Text>
                       </View>
-                    </View>
+                    ))}
                   </View>
+                </View>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    )}
+  </>
+)}
 
-                                </View>
-              );
-            })}
-          </View>
-        )}
       </View>
     )}
   </View>

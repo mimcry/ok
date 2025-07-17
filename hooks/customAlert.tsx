@@ -1,6 +1,6 @@
-import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AlertCircle, AlertTriangle, CheckCircle } from 'lucide-react-native';
+import React from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type AlertType = 'warning' | 'danger'|'success' | 'default'| string| undefined;
 
@@ -61,7 +61,13 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
   const alertConfig = getAlertConfig();
 
   return (
-    <Modal transparent animationType="fade" visible={visible}>
+    <Modal 
+      transparent 
+      animationType="fade" 
+      visible={visible}
+      onRequestClose={onCancel}
+      statusBarTranslucent={true}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.titleContainer}>
@@ -76,28 +82,29 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
           <Text style={styles.message}>{message}</Text>
           
           <View style={styles.buttonRow}>
-  {!hideCancel && (
-    <TouchableOpacity 
-      onPress={onCancel} 
-      style={[styles.button, styles.cancelButton]}
-    >
-      <Text style={styles.cancelText}>{cancelText}</Text>
-    </TouchableOpacity>
-  )}
+            {!hideCancel && (
+              <TouchableOpacity 
+                onPress={onCancel} 
+                style={[styles.button, styles.cancelButton]}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.cancelText}>{cancelText}</Text>
+              </TouchableOpacity>
+            )}
 
-  <TouchableOpacity 
-    onPress={onConfirm} 
-    style={[
-      styles.button, 
-      styles.confirmButton,
-      { backgroundColor: alertConfig.confirmButtonColor },
-      hideCancel && { flex: 1, marginHorizontal: 0 } // center align if no cancel
-    ]}
-  >
-    <Text style={styles.confirmText}>{confirmText}</Text>
-  </TouchableOpacity>
-</View>
-
+            <TouchableOpacity 
+              onPress={onConfirm} 
+              style={[
+                styles.button, 
+                styles.confirmButton,
+                { backgroundColor: alertConfig.confirmButtonColor },
+                hideCancel && { flex: 1, marginHorizontal: 0 }
+              ]}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.confirmText}>{confirmText}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -107,20 +114,28 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 9999,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   container: {
-    width: '80%',
+    width: '85%',
+    maxWidth: 400,
     backgroundColor: '#fff',
     borderRadius: 14,
     padding: 20,
-    elevation: 10,
+    elevation: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
+    zIndex: 10000,
   },
   titleContainer: {
     flexDirection: 'row',

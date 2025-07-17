@@ -534,12 +534,7 @@ const fetchUserDetail = async (userId: string): Promise<void> => {
               
               </View>
             ) : (
-              <View className="mb-5">
-                <Text className="text-lg font-bold mb-2">Cleaner Assignment</Text>
-                <View className="bg-gray-50 p-3 rounded-lg">
-                  <Text className="text-gray-500">No cleaner assigned</Text>
-                </View>
-              </View>
+              null
             )}
 
             {/* Action Buttons */}

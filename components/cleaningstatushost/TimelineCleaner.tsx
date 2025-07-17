@@ -122,7 +122,7 @@ const TimelineCleaner = ({ jobData }:any) => {
           <Text className="text-white/80 text-sm mt-1">
             Finished at{' '}
             <DateFormatter
-              date={jobData.cleaner_end_time || jobData.end_time}
+              date={jobData.finished_at}
               format="time"
               textClassName="text-white"
             />
